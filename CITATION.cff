@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this dataset, protocol, or pipeline, please cite the associated manuscript once published. Until then, cite this repository directly."
+title: "Trustworthy Multimodal Generative AI for Automated Educational Assessment: A PRISMA 2020 Systematic Review — Reproducibility Package"
+authors:
+  - family-names: Vairamuthu
+date-released: 2026-07-25
+repository-code: "REPLACE_WITH_GITHUB_URL_AFTER_PUSH"
+license:
+  - MIT
+  - CC-BY-4.0
+keywords:
+  - systematic review
+  - PRISMA 2020
+  - multimodal generative AI
+  - large language models
+  - automated educational assessment
+  - trustworthy AI
