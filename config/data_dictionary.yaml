@@ -1,0 +1,108 @@
+# Field-level data dictionary for the two primary CSV deliverables.
+# This is the authoritative schema — scripts must not add/remove columns
+# without updating this file first.
+
+master_records_csv:
+  path: outputs/csv/master_records.csv
+  primary_key: record_id
+  fields:
+    record_id: {type: string, description: "Stable internal ID, format REC-000001"}
+    source_database: {type: string, description: "OpenAlex | Crossref | Scopus | Web of Science | ERIC | IEEE Xplore | ACM DL | PubMed"}
+    source_query_id: {type: string, description: "FK to config/search_queries.yaml queries[].query_id"}
+    source_query_text: {type: string, description: "Exact query string used"}
+    retrieval_date: {type: date, description: "ISO date the record was retrieved"}
+    openalex_id: {type: string, nullable: true}
+    crossref_id: {type: string, nullable: true}
+    title: {type: string}
+    authors: {type: string, description: "Semicolon-separated 'Family, Given' list"}
+    publication_year: {type: integer}
+    publication_date: {type: date, nullable: true}
+    journal_name: {type: string}
+    issn_print: {type: string, nullable: true}
+    issn_electronic: {type: string, nullable: true}
+    publisher: {type: string, nullable: true}
+    document_type: {type: string}
+    doi_raw: {type: string, nullable: true}
+    doi_normalized: {type: string, description: "Lowercase, no https prefix, e.g. 10.1234/abcd"}
+    doi_url: {type: string, description: "https://doi.org/<doi_normalized>"}
+    abstract: {type: string, nullable: true, description: "Reconstructed from OpenAlex inverted index where applicable"}
+    keywords: {type: string, nullable: true, description: "Semicolon-separated"}
+    open_access_status: {type: string, nullable: true, description: "gold | green | hybrid | bronze | closed | NR (OpenAlex-verified only)"}
+    open_access_url: {type: string, nullable: true}
+    crossref_license: {type: string, nullable: true, description: "Semicolon-joined license URLs from Crossref item.license; evidence of an open license (e.g. CC BY) but NOT a reliable legal-OA tier"}
+    landing_page_url: {type: string, nullable: true}
+    cited_by_count_openalex: {type: integer, nullable: true}
+    scopus_verified: {type: boolean}
+    scopus_verification_source: {type: string, nullable: true}
+    scopus_verification_date: {type: date, nullable: true}
+    scimago_category: {type: string, nullable: true}
+    scimago_quartile: {type: string, nullable: true, enum: [Q1, Q2, Q3, Q4, NR]}
+    scimago_year: {type: integer, nullable: true}
+    sjr_value: {type: float, nullable: true}
+    journal_h_index: {type: integer, nullable: true}
+    impact_factor: {type: float, nullable: true, description: "Clarivate JIF only if user-supplied; never inferred"}
+    impact_factor_source_year: {type: integer, nullable: true}
+    venue_match_status: {type: string, enum: [matched, unmatched, ambiguous, pending]}
+    venue_match_confidence: {type: string, enum: [high, medium, low, NR]}
+    deduplication_status: {type: string, enum: [unique, duplicate, needs_manual_review]}
+    duplicate_of_record_id: {type: string, nullable: true}
+    title_abstract_ai_decision: {type: string, enum: [include, exclude, unclear, pending]}
+    title_abstract_ai_reason: {type: string, nullable: true, description: "Exclusion reason code from config/inclusion_exclusion.yaml"}
+    title_abstract_ai_rationale: {type: string, nullable: true}
+    title_abstract_human_decision: {type: string, enum: [include, exclude, unclear, pending]}
+    fulltext_ai_decision: {type: string, enum: [include, exclude, unclear, pending]}
+    fulltext_ai_reason: {type: string, nullable: true}
+    fulltext_ai_rationale: {type: string, nullable: true}
+    fulltext_human_decision: {type: string, enum: [include, exclude, unclear, pending]}
+    final_included: {type: boolean, nullable: true, description: "Null until human-approved"}
+    final_exclusion_reason: {type: string, nullable: true}
+    reviewer_name: {type: string, nullable: true}
+    review_date: {type: date, nullable: true}
+    notes: {type: string, nullable: true}
+
+evidence_extraction_csv:
+  path: outputs/csv/evidence_extraction.csv
+  primary_key: record_id
+  fields:
+    record_id: {type: string, description: "FK to master_records_csv.record_id"}
+    doi_normalized: {type: string}
+    citation_key: {type: string, description: "e.g. Smith2025"}
+    educational_context: {type: string, nullable: true}
+    educational_level: {type: string, nullable: true, description: "K-12 | higher-ed | vocational | mixed | NR"}
+    subject_area: {type: string, nullable: true}
+    assessment_task: {type: string, nullable: true}
+    answer_format: {type: string, nullable: true, description: "short-answer | essay | diagram | mixed | NR"}
+    input_modalities: {type: string, nullable: true, description: "Semicolon-separated list"}
+    document_or_image_type: {type: string, nullable: true}
+    ocr_or_document_model: {type: string, nullable: true}
+    generative_model: {type: string, nullable: true}
+    retrieval_or_rag_component: {type: string, nullable: true}
+    rubric_or_reference_material: {type: string, nullable: true}
+    evidence_grounding_method: {type: string, nullable: true}
+    hallucination_definition_or_test: {type: string, nullable: true}
+    hallucination_metric_result: {type: string, nullable: true}
+    calibration_method: {type: string, nullable: true}
+    calibration_metric_result: {type: string, nullable: true}
+    uncertainty_or_abstention_method: {type: string, nullable: true}
+    explainability_method: {type: string, nullable: true}
+    fairness_or_bias_method: {type: string, nullable: true}
+    human_in_the_loop_design: {type: string, nullable: true}
+    dataset_name: {type: string, nullable: true}
+    dataset_size: {type: string, nullable: true}
+    annotation_and_ground_truth: {type: string, nullable: true}
+    ethics_consent_privacy: {type: string, nullable: true}
+    data_split_leakage_controls: {type: string, nullable: true}
+    baselines: {type: string, nullable: true}
+    primary_metrics: {type: string, nullable: true}
+    key_results: {type: string, nullable: true}
+    main_findings: {type: string, nullable: true}
+    author_reported_limitations: {type: string, nullable: true}
+    code_available: {type: string, nullable: true, enum: [yes, no, NR]}
+    data_available: {type: string, nullable: true, enum: [yes, no, NR]}
+    funding_conflicts: {type: string, nullable: true}
+    extraction_status: {type: string, enum: [ai_draft, human_verified, needs_review]}
+    human_verified: {type: boolean}
+    evidence_page_section: {type: string, nullable: true, description: "Page/section/table reference supporting each major claim"}
+    notes: {type: string, nullable: true}
+
+missing_value_code: "NR"

@@ -1,0 +1,114 @@
+# Eligibility criteria as a machine-checkable rule set.
+# Used by scripts/06_match_venues_q1_q2.py (venue gate) and the screening
+# worklist generator (scripts/07_prepare_screening_worklist.py) to pre-fill
+# AI-draft reason codes. Final decisions are always human-approved.
+
+date_range:
+  start: "2025-01-01"
+  end: "2026-12-31"
+
+language:
+  include: [English]
+
+publication_type:
+  include:
+    - journal-article
+    - proceedings-article   # full conference papers (IEEE/ACM/etc.) are core-eligible,
+                             # see amendment PA-001 in outputs/logs/protocol_amendments.md
+  exclude:
+    - preprint
+    - arxiv-only
+    - extended-abstract      # short/poster-length conference submissions, not full papers
+    - workshop-paper-non-peer-reviewed
+    - editorial
+    - letter
+    - thesis
+    - book-chapter
+    - opinion
+    - tutorial
+    - non-peer-reviewed
+
+doi:
+  required: true
+  must_be_verified: true
+
+venue_quality:
+  # Amendment PA-001: Scopus Q1/Q2 verification is no longer a hard inclusion
+  # gate. It is retained as a REPORTED, non-exclusionary descriptive field
+  # (useful for the manuscript's venue-profile table and for JAIR reviewers'
+  # context) unless the researcher's supervisor or university explicitly
+  # mandates Scopus-only inclusion, in which case this file must be amended
+  # back and the amendment logged. Rationale: a hard Scopus/quartile gate
+  # excludes relevant AI/ML, ed-tech, and HCI conference venues (IEEE, ACM)
+  # that are central to this literature and are not well served by journal
+  # quartile metrics.
+  required: false
+  accepted_quartiles: [Q1, Q2, Q3, Q4, NR]   # all recorded; none excluded on this basis alone
+  verification_required_from:
+    - user_supplied_scopus_sources_export
+    - scimago_sjr_export
+  reject_if: null   # quartile/venue-index status no longer triggers exclusion by itself
+
+quality_criteria:
+  # Screening-time quality gate (lighter than the full Phase-4 quality
+  # appraisal rubric in config/quality_appraisal.yaml, which still applies
+  # to all included studies during extraction).
+  description: >
+    Applied at full-text screening in place of a venue-quartile gate.
+    A record must clear all of these to be included, regardless of venue.
+  requires_all:
+    - is_peer_reviewed: true   # confirmed peer-review process (journal peer review,
+                                 # or full-paper conference peer review, not just abstract review)
+    - sufficient_method_detail: true   # architecture/model, data, and evaluation procedure
+                                         # described well enough to be assessed, not just claimed
+    - has_evaluable_outcomes: true     # reports at least one concrete, checkable result
+                                         # (metric, human evaluation, or qualitative finding
+                                         # with evidence), not purely a position/vision piece
+    - clear_educational_assessment_setting: true
+    - relevant_trustworthiness_evidence: true   # see has_trustworthiness_aspect below
+
+core_inclusion_requires_all:
+  - within_date_range
+  - is_peer_reviewed_journal_article_or_full_conference_paper
+  - has_valid_verified_doi
+  - directly_relevant_to_automated_educational_assessment
+  - has_multimodal_component:
+      description: >
+        At least two meaningful modalities/sources: answer image, handwriting,
+        OCR text, diagram, question, rubric, reference answer, layout,
+        audio/video, or assessment metadata.
+      min_modalities: 2
+  - has_generative_ai_component:
+      examples: [LLM, VLM, MLLM, "generative document model", "generative feedback/scoring model", "multimodal RAG"]
+  - has_trustworthiness_aspect:
+      examples: [hallucination, grounding, calibration, uncertainty, abstention, explainability, fairness, robustness, reliability, privacy, auditability, "human oversight"]
+      min_aspects: 1
+  - meets_screening_quality_criteria   # see quality_criteria block above; replaces the old
+                                         # verified_q1_or_q2_venue hard gate (amendment PA-001)
+
+exclusion_reason_codes:
+  E01: arxiv_or_preprint_only
+  E02: no_doi
+  E03: conference_extended_abstract_or_poster_not_full_paper   # redefined under PA-001;
+                                                                 # full conference papers are core-eligible,
+                                                                 # only non-full-paper conference content excluded here
+  E04: wrong_document_type   # editorial/letter/thesis/book_chapter/opinion/tutorial/non_peer_reviewed
+  E05: generic_genai_education_no_assessment_task
+  E06: traditional_aes_no_generative_component
+  E07: generative_no_multimodal_component
+  E08: multimodal_no_generative_component
+  E09: no_educational_assessment_connection
+  E10: fails_screening_quality_criteria   # redefined under PA-001 (was venue_quartile_unverified);
+                                            # insufficient method detail, no evaluable outcomes, or
+                                            # not clearly peer-reviewed
+  E11: predatory_delisted_or_unclear_quality_venue   # still a hard exclude; independent of quartile
+  E12: outside_date_range
+  E13: not_english
+  E14: duplicate_record
+  E15: other  # requires free-text justification in notes field
+
+screening_decision_labels: [include, exclude, unclear]
+
+ai_draft_policy:
+  all_ai_decisions_labeled: "AI draft—human decision pending"
+  human_approval_required_before: [title_abstract_final, fulltext_final, extraction_final]

@@ -1,0 +1,129 @@
+# Machine-readable PRISMA 2020 protocol summary.
+# Human-readable version: docs/protocol.md
+# This file is the single source of truth consumed by scripts (date ranges,
+# thresholds, target counts) so protocol changes are made in ONE place.
+
+protocol_id: evalbot-jair-prisma-2026
+title: >
+  Trustworthy Multimodal Generative AI for Automated Educational Assessment:
+  A PRISMA 2020 Systematic Review
+version: 0.1.0-draft
+status: phase_0_build
+registered: false
+prisma_version: "PRISMA 2020"
+
+target_journal:
+  name: Journal of Artificial Intelligence Research
+  acronym: JAIR
+
+primary_research_question: >
+  How are trustworthy multimodal generative-AI systems designed, evaluated,
+  and governed for automated educational assessment?
+
+subquestions:
+  RQ1: Which educational assessment tasks, answer formats, and modalities are addressed?
+  RQ2: Which generative multimodal architectures are used (VLMs, MLLMs, OCR+LLM pipelines, multimodal RAG, rubric-grounded systems)?
+  RQ3: How are OCR accuracy, scoring validity, hallucination, grounding, calibration, uncertainty, fairness, robustness, and explainability evaluated?
+  RQ4: How are teacher review, human-in-the-loop control, AI abstention, and deferral policies implemented and validated?
+  RQ5: Which datasets, consent/privacy practices, benchmarks, and reproducibility artefacts are available?
+  RQ6: What evidence gaps motivate EvalBench, EvalBot, and an auditable teacher-deferral platform?
+
+date_range:
+  start: "2025-01-01"
+  end: "2026-12-31"
+
+publication_type:
+  include:
+    - peer-reviewed journal article
+    - full conference paper (peer-reviewed; IEEE/ACM/etc.) # amendment PA-001
+  exclude:
+    - preprint
+    - arxiv-only
+    - conference extended abstract or poster (not a full paper)
+    - editorial
+    - letter
+    - thesis
+    - book_chapter
+    - opinion
+    - tutorial
+    - non_peer_reviewed
+
+venue_quality_requirement:
+  # Amendment PA-001 (see outputs/logs/protocol_amendments.md): Scopus Q1/Q2
+  # is no longer a hard inclusion gate. Reported descriptively only, unless
+  # the supervisor/university explicitly mandates Scopus-only inclusion.
+  required: false
+  accepted_quartiles: [Q1, Q2, Q3, Q4, NR]
+  source_priority:
+    - user_supplied_scopus_sources_export
+    - scimago_sjr_legally_obtained_export
+  never_infer_from_reputation: true
+
+screening_quality_gate:
+  # Replaces the venue-quartile gate at full-text screening.
+  requires_all:
+    - peer_review_status_confirmed
+    - sufficient_method_detail
+    - has_evaluable_outcomes
+    - clear_educational_assessment_setting
+    - relevant_trustworthiness_evidence
+
+language: english
+
+information_sources:
+  - OpenAlex
+  - Crossref
+  - Scopus (manual export)
+  - Web of Science Core Collection (manual export)
+  - ERIC (manual export)
+  - IEEE Xplore (manual export; journal + full conference papers)
+  - ACM Digital Library (manual export; journal + full conference papers)
+  - PubMed (manual export; only for medical/health-professions education assessment)
+
+screening:
+  stages:
+    - title_abstract
+    - full_text
+  decision_labels: [include, exclude, unclear]
+  ai_role: draft_only
+  human_approval_required: true
+
+extraction:
+  ai_role: draft_only
+  human_approval_required: true
+  missing_value_code: "NR"   # Not Reported
+
+quality_appraisal:
+  dimensions:
+    - dataset_and_consent
+    - ground_truth_construction
+    - leakage_safeguards
+    - baseline_comparisons
+    - evaluation_metrics
+    - calibration
+    - grounding
+    - hallucination_testing
+    - fairness
+    - robustness
+    - human_evaluation
+    - reproducibility
+    - limitations_reporting
+    - funding_conflicts
+
+target_core_included_studies: 100
+fallback_if_below_target: see docs/protocol.md section "Fallback amendment protocol"
+
+approval_gates:
+  - phase_0_build
+  - phase_1_discovery
+  - phase_2_cleaning_verification
+  - phase_3_screening
+  - phase_4_full_text
+  - phase_5_synthesis
+  - phase_6_final_audit
+
+integrity:
+  no_fabrication: true
+  no_paywall_bypass: true
+  ai_not_listed_as_author: true
+  full_audit_trail_required: true

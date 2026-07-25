@@ -1,0 +1,28 @@
+# Core data handling
+pandas>=2.2.0
+numpy>=1.26.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.1
+
+# HTTP / API clients
+requests>=2.31.0
+tenacity>=8.2.3
+
+# DOI / text normalization and fuzzy matching
+rapidfuzz>=3.6.1
+unidecode>=1.3.8
+
+# Excel workbook generation
+openpyxl>=3.1.2
+xlsxwriter>=3.2.0
+
+# PDF validation (header/size checks, not scraping)
+pypdf>=4.1.0
+
+# Testing
+pytest>=8.1.0
+pytest-cov>=5.0.0
+
+# CLI / logging ergonomics
+rich>=13.7.1
+click>=8.1.7

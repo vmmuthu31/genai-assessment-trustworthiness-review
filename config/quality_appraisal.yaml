@@ -1,0 +1,53 @@
+# Quality appraisal rubric consumed by prompts/09_quality_appraiser.md and
+# scripts feeding outputs/csv/quality_appraisal.csv.
+# Adapted (not copied) from established risk-of-bias/quality frameworks for
+# AI/ML evaluation studies (e.g., PROBAST- and CHARMS-inspired dimensions),
+# customized for multimodal generative educational-assessment systems.
+# Each dimension scored: strong | adequate | weak | not_reported (NR).
+
+scale:
+  values: [strong, adequate, weak, NR]
+  description: >
+    strong = explicit, rigorous treatment with verifiable detail;
+    adequate = present but limited detail or partial rigor;
+    weak = mentioned only superficially or with clear methodological gaps;
+    NR = not reported / cannot be determined from the text.
+
+dimensions:
+  dataset_and_consent:
+    question: Is the dataset source described, and is participant/student consent or ethical approval documented?
+  ground_truth_construction:
+    question: Is the process for establishing ground-truth scores/labels (e.g., expert grading, inter-rater agreement) described and reproducible?
+  leakage_safeguards:
+    question: Are train/validation/test splits and any measures against data leakage (e.g., across students, cohorts, question sets) explicitly reported?
+  baseline_comparisons:
+    question: Are results compared against meaningful baselines (human graders, prior automated systems, ablations)?
+  evaluation_metrics:
+    question: Are evaluation metrics appropriate, clearly defined, and reported with sufficient statistical detail (e.g., confidence intervals, sample sizes)?
+  calibration:
+    question: Is model confidence calibration evaluated (e.g., ECE, reliability diagrams, Brier score)?
+  grounding:
+    question: Is rubric/evidence grounding of generated scores or feedback explicitly evaluated (e.g., citation to source text, attribution accuracy)?
+  hallucination_testing:
+    question: Is hallucination or factuality explicitly defined and tested, with a reported metric or protocol?
+  fairness:
+    question: Is fairness or bias across student subgroups (e.g., handwriting style, language background, demographic group) evaluated?
+  robustness:
+    question: Is robustness tested (e.g., adversarial inputs, OCR noise, image quality variation, out-of-distribution rubrics)?
+  human_evaluation:
+    question: Is there a human evaluation component (teacher review, expert judgment) beyond automated metrics?
+  reproducibility:
+    question: Are code, data, prompts, or model checkpoints available or otherwise sufficient for independent reproduction?
+  limitations_reporting:
+    question: Do the authors explicitly report limitations of their approach?
+  funding_conflicts:
+    question: Are funding sources and conflicts of interest disclosed?
+
+overall_appraisal:
+  method: >
+    No single composite score is computed automatically. Each dimension is
+    reported individually in outputs/csv/quality_appraisal.csv; any narrative
+    "overall risk" judgment is drafted by the AI appraiser but requires
+    explicit human sign-off before use in synthesis (Phase 5).
+  ai_role: draft_only
+  human_approval_required: true

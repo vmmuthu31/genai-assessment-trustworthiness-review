@@ -1,0 +1,388 @@
+# Source-specific, reproducible search queries derived from the 5 concept
+# families in the review protocol (docs/search_strategy.md has full rationale).
+# Every query has a stable query_id referenced by outputs/csv/master_records.csv
+# (source_query_id) and outputs/csv/prisma_log.csv for full traceability.
+#
+# Do NOT apply Q1/Q2 filters at this stage — retrieve broadly, then verify
+# venues downstream (scripts/05_import_venue_quality_sources.py,
+# scripts/06_match_venues_q1_q2.py).
+
+date_range:
+  start: "2025-01-01"
+  end: "2026-12-31"
+
+concept_families:
+  F1_core_topic:
+    concept_a:
+      - "multimodal generative AI"
+      - "multimodal large language model"
+      - "MLLM"
+      - "large multimodal model"
+      - "vision-language model"
+      - "VLM"
+      - "generative document AI"
+    concept_b:
+      - "automated educational assessment"
+      - "educational assessment"
+      - "automated grading"
+      - "automated scoring"
+      - "short answer scoring"
+      - "rubric-based scoring"
+      - "exam assessment"
+      - "examination assessment"
+      - "student assessment"
+      - "automated feedback"
+
+  F2_handwriting_ocr:
+    concept_a:
+      - "handwritten"
+      - "handwriting"
+      - "answer sheet"
+      - "exam script"
+      - "examination script"
+      - "OCR"
+      - "document understanding"
+    concept_b:
+      - "automated grading"
+      - "automated scoring"
+      - "short answer scoring"
+      - "rubric-based scoring"
+      - "feedback generation"
+    concept_c:
+      - "multimodal"
+      - "generative"
+      - "MLLM"
+      - "LLM"
+      - "vision-language model"
+
+  F3_trustworthy_assessment:
+    # Tightened 2026-07 (concept_a): dropped generic "generative AI" and
+    # "multimodal", which matched off-topic "assessment" papers (medical/
+    # clinical, driver-drowsiness, rumor detection). Kept specific generative
+    # model terms so the family stays on the LLM/MLLM/VLM education-assessment
+    # literature and the raw pool shrinks materially.
+    concept_a:
+      - "LLM"
+      - "MLLM"
+      - "large multimodal model"
+      - "vision-language model"
+    concept_b:
+      - "assessment"
+      - "grading"
+      - "scoring"
+      - "feedback"
+    # Tightened 2026-07: dropped semantically loose terms (bias, fairness,
+    # confidence, transparency, reliability) that pulled ~28k mostly-incidental
+    # records. Retained trust concepts specific to grounded/uncertain generation
+    # and human oversight in assessment.
+    concept_c:
+      - "hallucination"
+      - "factuality"
+      - "grounding"
+      - "attribution"
+      - "calibration"
+      - "uncertainty quantification"
+      - "trustworthy AI"
+      - "explainability"
+      - "robustness"
+      - "auditability"
+      - "human-in-the-loop"
+      - "abstention"
+      - "deferral"
+
+  F4_rubric_grounding_oversight:
+    concept_a:
+      - "rubric"
+      - "rubric-grounded"
+      - "evidence-grounded"
+      - "evidence grounding"
+      - "source attribution"
+      - "teacher review"
+      - "human-in-the-loop"
+      - "selective prediction"
+      - "abstention"
+      - "deferral"
+    concept_b:
+      - "automated assessment"
+      - "grading"
+      - "scoring"
+    concept_c:
+      - "generative"
+      - "multimodal"
+      - "MLLM"
+      - "LLM"
+      - "vision-language model"
+
+  F5_visual_stem:
+    concept_a:
+      - "diagram"
+      - "graph"
+      - "mathematics"
+      - "STEM"
+      - "visual answer"
+    concept_b:
+      - "automated assessment"
+      - "grading"
+      - "scoring"
+    concept_c:
+      - "multimodal"
+      - "generative"
+      - "MLLM"
+      - "vision-language model"
+      - "OCR"
+
+# ---------------------------------------------------------------------------
+# Source-specific query implementations.
+# Each entry: query_id, database, concept_family, exact query string/syntax,
+# filters applied, and where the exported result set will be logged.
+# result_count and export_path are filled in at run time by the fetch scripts
+# and logged to outputs/csv/prisma_log.csv — do not hand-edit those fields.
+# ---------------------------------------------------------------------------
+# OpenAlex API queries: one per concept family. The fetch script
+# (scripts/01_fetch_openalex.py) builds the boolean from the concept_families
+# blocks above and applies it to the `title_and_abstract.search` filter as
+# (concept_a OR ...) AND (concept_b OR ...) [AND (concept_c OR ...)] — mirroring
+# the Scopus TITLE-ABS-KEY queries below. Do NOT use the top-level fulltext
+# `search` param (it requires all words to co-occur and returns zero results).
+queries:
+  - query_id: OA-F1-01
+    database: OpenAlex
+    concept_family: F1_core_topic
+    query_type: api
+    query_text: "(F1 concept_a) AND (F1 concept_b) on title_and_abstract.search; built from concept_families by scripts/01_fetch_openalex.py"
+    filters:
+      from_publication_date: "2025-01-01"
+      to_publication_date: "2026-12-31"
+      type: "journal-article"
+
+  - query_id: OA-F2-01
+    database: OpenAlex
+    concept_family: F2_handwriting_ocr
+    query_type: api
+    query_text: "(F2 concept_a) AND (F2 concept_b) AND (F2 concept_c) on title_and_abstract.search; built from concept_families by scripts/01_fetch_openalex.py"
+    filters:
+      from_publication_date: "2025-01-01"
+      to_publication_date: "2026-12-31"
+      type: "journal-article"
+
+  - query_id: OA-F3-01
+    database: OpenAlex
+    concept_family: F3_trustworthy_assessment
+    query_type: api
+    query_text: "(F3 concept_a) AND (F3 concept_b) AND (F3 concept_c) on title_and_abstract.search; built from concept_families by scripts/01_fetch_openalex.py"
+    filters:
+      from_publication_date: "2025-01-01"
+      to_publication_date: "2026-12-31"
+      type: "journal-article"
+
+  - query_id: OA-F4-01
+    database: OpenAlex
+    concept_family: F4_rubric_grounding_oversight
+    query_type: api
+    query_text: "(F4 concept_a) AND (F4 concept_b) AND (F4 concept_c) on title_and_abstract.search; built from concept_families by scripts/01_fetch_openalex.py"
+    filters:
+      from_publication_date: "2025-01-01"
+      to_publication_date: "2026-12-31"
+      type: "journal-article"
+
+  - query_id: OA-F5-01
+    database: OpenAlex
+    concept_family: F5_visual_stem
+    query_type: api
+    query_text: "(F5 concept_a) AND (F5 concept_b) AND (F5 concept_c) on title_and_abstract.search; built from concept_families by scripts/01_fetch_openalex.py"
+    filters:
+      from_publication_date: "2025-01-01"
+      to_publication_date: "2026-12-31"
+      type: "journal-article"
+
+  - query_id: CR-F1-01
+    database: Crossref
+    concept_family: F1_core_topic
+    query_type: api
+    query_text: >
+      Free-text query.bibliographic built from F1 concept_a/b/c terms
+      (top 3 terms per concept group); see scripts/02_fetch_crossref.py
+      :build_bibliographic_query for exact construction. Amendment PA-001:
+      journal-article and proceedings-article (full conference papers) both
+      retrieved (no `type` filter override below -> script default).
+    filters:
+      from-pub-date: "2025-01-01"
+      until-pub-date: "2026-12-31"
+
+  - query_id: CR-F2-01
+    database: Crossref
+    concept_family: F2_handwriting_ocr
+    query_type: api
+    query_text: >
+      Free-text query.bibliographic built from F2 concept_a/b/c terms; see
+      scripts/02_fetch_crossref.py:build_bibliographic_query. PA-001: journal
+      + full conference papers both retrieved.
+    filters:
+      from-pub-date: "2025-01-01"
+      until-pub-date: "2026-12-31"
+
+  - query_id: CR-F3-01
+    database: Crossref
+    concept_family: F3_trustworthy_assessment
+    query_type: api
+    query_text: >
+      Free-text query.bibliographic built from F3 concept_a/b/c terms; see
+      scripts/02_fetch_crossref.py:build_bibliographic_query. PA-001: journal
+      + full conference papers both retrieved.
+    filters:
+      from-pub-date: "2025-01-01"
+      until-pub-date: "2026-12-31"
+
+  - query_id: CR-F4-01
+    database: Crossref
+    concept_family: F4_rubric_grounding_oversight
+    query_type: api
+    query_text: >
+      Free-text query.bibliographic built from F4 concept_a/b/c terms; see
+      scripts/02_fetch_crossref.py:build_bibliographic_query. PA-001: journal
+      + full conference papers both retrieved.
+    filters:
+      from-pub-date: "2025-01-01"
+      until-pub-date: "2026-12-31"
+
+  - query_id: CR-F5-01
+    database: Crossref
+    concept_family: F5_visual_stem
+    query_type: api
+    query_text: >
+      Free-text query.bibliographic built from F5 concept_a/b/c terms; see
+      scripts/02_fetch_crossref.py:build_bibliographic_query. PA-001: journal
+      + full conference papers both retrieved.
+    filters:
+      from-pub-date: "2025-01-01"
+      until-pub-date: "2026-12-31"
+
+  # Manual-export sources: researcher runs these queries directly in each
+  # database's UI (advanced search) and exports RIS/CSV/BibTeX into
+  # data/raw/manual_database_exports/. query_text below is the exact string
+  # to paste into each platform's advanced search syntax.
+  - query_id: SCOPUS-F1-01
+    database: Scopus
+    concept_family: F1_core_topic
+    query_type: manual_export
+    query_text: >
+      TITLE-ABS-KEY(("multimodal generative AI" OR "multimodal large language
+      model" OR "MLLM" OR "large multimodal model" OR "vision-language model"
+      OR "VLM" OR "generative document AI") AND ("automated educational
+      assessment" OR "educational assessment" OR "automated grading" OR
+      "automated scoring" OR "short answer scoring" OR "rubric-based scoring"
+      OR "exam assessment" OR "examination assessment" OR "student assessment"
+      OR "automated feedback")) AND PUBYEAR > 2024 AND PUBYEAR < 2027
+    export_target: data/raw/manual_database_exports/scopus_F1.csv
+
+  - query_id: SCOPUS-F2-01
+    database: Scopus
+    concept_family: F2_handwriting_ocr
+    query_type: manual_export
+    query_text: >
+      TITLE-ABS-KEY((handwritten OR handwriting OR "answer sheet" OR "exam
+      script" OR "examination script" OR OCR OR "document understanding") AND
+      ("automated grading" OR "automated scoring" OR "short answer scoring" OR
+      "rubric-based scoring" OR "feedback generation") AND (multimodal OR
+      generative OR MLLM OR LLM OR "vision-language model")) AND PUBYEAR > 2024
+      AND PUBYEAR < 2027
+    export_target: data/raw/manual_database_exports/scopus_F2.csv
+
+  - query_id: SCOPUS-F3-01
+    database: Scopus
+    concept_family: F3_trustworthy_assessment
+    query_type: manual_export
+    query_text: >
+      TITLE-ABS-KEY(("generative AI" OR LLM OR MLLM OR multimodal OR
+      "vision-language model") AND (assessment OR grading OR scoring OR
+      feedback) AND (hallucination OR factuality OR grounding OR attribution
+      OR calibration OR uncertainty OR confidence OR explainability OR
+      transparency OR fairness OR bias OR robustness OR reliability OR
+      auditability OR "human-in-the-loop" OR abstention OR deferral)) AND
+      PUBYEAR > 2024 AND PUBYEAR < 2027
+    export_target: data/raw/manual_database_exports/scopus_F3.csv
+
+  - query_id: SCOPUS-F4-01
+    database: Scopus
+    concept_family: F4_rubric_grounding_oversight
+    query_type: manual_export
+    query_text: >
+      TITLE-ABS-KEY((rubric OR "rubric-grounded" OR "evidence-grounded" OR
+      "evidence grounding" OR "source attribution" OR "teacher review" OR
+      "human-in-the-loop" OR "selective prediction" OR abstention OR deferral)
+      AND ("automated assessment" OR grading OR scoring) AND (generative OR
+      multimodal OR MLLM OR LLM OR "vision-language model")) AND PUBYEAR >
+      2024 AND PUBYEAR < 2027
+    export_target: data/raw/manual_database_exports/scopus_F4.csv
+
+  - query_id: SCOPUS-F5-01
+    database: Scopus
+    concept_family: F5_visual_stem
+    query_type: manual_export
+    query_text: >
+      TITLE-ABS-KEY((diagram OR graph OR mathematics OR STEM OR "visual
+      answer") AND ("automated assessment" OR grading OR scoring) AND
+      (multimodal OR generative OR MLLM OR "vision-language model" OR OCR))
+      AND PUBYEAR > 2024 AND PUBYEAR < 2027
+    export_target: data/raw/manual_database_exports/scopus_F5.csv
+
+  - query_id: WOS-F1-05
+    database: Web of Science
+    concept_family: [F1_core_topic, F2_handwriting_ocr, F3_trustworthy_assessment, F4_rubric_grounding_oversight, F5_visual_stem]
+    query_type: manual_export
+    query_text: >
+      Run each of the five TS= field-tag equivalents of the Scopus queries
+      above (WoS "Topic" search uses TS= in place of TITLE-ABS-KEY), one
+      export per family. Apply Publication Years 2025-2026 and Document
+      Types = Article.
+    export_target: data/raw/manual_database_exports/wos_F{1..5}.csv
+
+  - query_id: ERIC-F1-05
+    database: ERIC
+    concept_family: [F1_core_topic, F2_handwriting_ocr, F3_trustworthy_assessment, F4_rubric_grounding_oversight, F5_visual_stem]
+    query_type: manual_export
+    query_text: >
+      Use ERIC advanced search with the same boolean structure applied to
+      Title/Abstract fields; restrict Publication Date to 2025-2026; export
+      one CSV per concept family.
+    export_target: data/raw/manual_database_exports/eric_F{1..5}.csv
+
+  - query_id: IEEE-F1-05
+    database: IEEE Xplore
+    concept_family: [F1_core_topic, F2_handwriting_ocr, F3_trustworthy_assessment, F4_rubric_grounding_oversight, F5_visual_stem]
+    query_type: manual_export
+    query_text: >
+      IEEE Xplore Command Search using ("Full Text & Metadata") equivalents
+      of each family's boolean string; filter Content Type = Journals;
+      Publication Year 2025-2026; export one CSV per family.
+    export_target: data/raw/manual_database_exports/ieee_F{1..5}.csv
+
+  - query_id: ACM-F1-05
+    database: ACM Digital Library
+    concept_family: [F1_core_topic, F2_handwriting_ocr, F3_trustworthy_assessment, F4_rubric_grounding_oversight, F5_visual_stem]
+    query_type: manual_export
+    query_text: >
+      ACM DL advanced search ([Abstract] and [Title] fields) using each
+      family's boolean string; filter to Journal content type; Publication
+      Date 2025-2026; export one CSV per family.
+    export_target: data/raw/manual_database_exports/acm_F{1..5}.csv
+
+  - query_id: PUBMED-F1-05
+    database: PubMed
+    concept_family: [F1_core_topic, F2_handwriting_ocr, F3_trustworthy_assessment, F4_rubric_grounding_oversight, F5_visual_stem]
+    query_type: manual_export
+    query_text: >
+      Apply only if results are educational-assessment relevant (PubMed is
+      secondary for this topic). Use PubMed field tags [tiab] with the same
+      boolean structure; Date range 2025/01/01:2026/12/31[dp]; export one
+      CSV per family where hits are non-trivial.
+    export_target: data/raw/manual_database_exports/pubmed_F{1..5}.csv
+
+# Conference-specific queries (kept separate from the core journal set;
+# results routed to outputs/conference_appendix_candidates/ per policy).
+conference_appendix_queries:
+  - query_id: CONF-F1-01
+    databases: [ACM Digital Library, IEEE Xplore, dblp]
+    concept_family: F1_core_topic
+    query_type: manual_export
+    notes: Same boolean structure, Content Type = Conference/Proceedings. Never merged into Q1/Q2 core without explicit researcher approval.
