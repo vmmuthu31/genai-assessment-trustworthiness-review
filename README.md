@@ -49,7 +49,7 @@ Screening, full-text eligibility assessment, evidence extraction, and quality ap
 
 ## Citation
 
-See `CITATION.cff`. A Zenodo DOI for the archived release will be added here once deposited.
+See `CITATION.cff`. Archived release (v1.4): https://doi.org/10.5281/zenodo.23609312
 
 ## Status
 

@@ -12,6 +12,7 @@ authors:
     affiliation: "SRM Institute of Science and Technology, Chennai, India"
 date-released: 2026-10-24
 version: "1.4"
+doi: "10.5281/zenodo.23609312"
 repository-code: "https://github.com/vmmuthu31/genai-assessment-trustworthiness-review"
 license:
   - MIT
