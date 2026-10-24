@@ -1,17 +1,25 @@
 cff-version: 1.2.0
-message: "If you use this dataset, protocol, or pipeline, please cite the associated manuscript once published. Until then, cite this repository directly."
-title: "Trustworthy Multimodal Generative AI for Automated Educational Assessment: A PRISMA 2020 Systematic Review — Reproducibility Package"
+message: "If you use this dataset, protocol or pipeline, please cite the associated manuscript once published, and this archived release."
+title: "Trustworthiness of generative AI for automated educational assessment: a PRISMA 2020 systematic review (reproducibility package, Corpus Freeze v1.4)"
+type: dataset
 authors:
-  - family-names: Vairamuthu
-date-released: 2026-07-25
-repository-code: "REPLACE_WITH_GITHUB_URL_AFTER_PUSH"
+  - family-names: Muthumari
+    given-names: Vairamuthu
+    orcid: "https://orcid.org/0009-0009-7207-5742"
+    affiliation: "SRM Institute of Science and Technology, Chennai, India"
+  - family-names: M. B.
+    given-names: Sudhan
+    affiliation: "SRM Institute of Science and Technology, Chennai, India"
+date-released: 2026-10-24
+version: "1.4"
+repository-code: "https://github.com/vmmuthu31/genai-assessment-trustworthiness-review"
 license:
   - MIT
   - CC-BY-4.0
 keywords:
   - systematic review
   - PRISMA 2020
-  - multimodal generative AI
+  - generative AI
   - large language models
   - automated educational assessment
   - trustworthy AI

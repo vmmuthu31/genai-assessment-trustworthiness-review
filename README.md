@@ -1,25 +1,28 @@
-# Trustworthy Multimodal Generative AI for Automated Educational Assessment: A PRISMA 2020 Systematic Review
+# Trustworthiness of Generative AI for Automated Educational Assessment: PRISMA 2020 Systematic Review (reproducibility package)
 
-This repository contains the reproducibility package for the systematic review submitted to the *Journal of Artificial Intelligence Research* (JAIR): protocol, search/screening/extraction pipeline, frozen evidence dataset, quality-appraisal data, and manual QC audit.
+This repository contains the reproducibility package for the systematic review *Trustworthiness of generative AI for automated educational assessment: a PRISMA 2020 systematic review* (submitted to *Artificial Intelligence Review*): protocol, search/screening/extraction pipeline, frozen evidence dataset, quality-appraisal data, and manual QC audit.
 
-It exists to satisfy JAIR's Reproducibility Checklist and the manuscript's Data Availability statement. The manuscript itself (LaTeX source and compiled PDF) is not included here while under double-blind review; this repository covers the data and pipeline referenced by the Data Availability statement.
+It supports the manuscript's Data Availability statement. The manuscript itself is not included here while under review.
 
 ## What's here
 
 | Path | Contents |
 |---|---|
-| `protocol/protocol.md` | Full review protocol, including eligibility criteria and the complete amendment log (PA-001 through PA-005) |
-| `data/` | The frozen evidence dataset: `master_records.csv` (deduplicated candidate pool), `evidence_extraction.csv`, `quality_appraisal.csv` |
-| `corpus_freeze/` | Dated snapshots of the synthesis corpus (v1.0 → v1.2) documenting exactly how and why the final 93-study corpus changed at each stage |
-| `qc/manual_qc_spotcheck_2026-07-22.md` | Manual audit comparing a random sample of extracted/appraised records against source PDFs |
-| `docs/` | Search strategy, screening manual, quality-appraisal manual, PRISMA flow documentation, ethical/data-governance notes, AI-use disclosure, and the human-verification and off-topic-triage audit logs |
-| `config/` | YAML configuration for the protocol, inclusion/exclusion rules, quality-appraisal rubric, search queries, and data dictionary |
-| `scripts/` | The full pipeline, numbered in execution order (`00_setup.py` through `19_apply_human_verification.py`) |
+| `protocol/protocol.md` | Review protocol with eligibility criteria and amendments PA-001 to PA-005 |
+| `protocol/amendments_PA-006_PA-007.md` | PA-006 (manual QC adjudication) and PA-007 (journal-article restriction) |
+| `data/` | `master_records.csv` (deduplicated pool), `evidence_extraction.csv` (with `corpus_status_v1_4`), `quality_appraisal.csv`, `synthesis_corpus_v1.4.csv` (the 60 included studies), `fulltext_exclusions_v1.4.csv` (97 exclusions), `replacement_candidates_v1.4.csv` |
+| `corpus_freeze/` | Dated snapshots v1.0 to v1.4 showing how the corpus changed (final: 60 studies) |
+| `qc/` | Manual audit of a random sample against source PDFs |
+| `docs/` | Search strategy, screening and appraisal manuals, PRISMA flow notes, governance, AI-use disclosure, audit logs |
+| `config/` | YAML configuration |
+| `scripts/` | The pipeline, numbered in execution order |
 
-## Corpus at a glance
+## Corpus at a glance (Corpus Freeze v1.4, 2026-10-24)
 
-- 13,854 records identified (OpenAlex + Crossref) → 12,028 after deduplication → 400-record screening shortlist → 336 included at screening → 157 assessed for full-text eligibility → **93 studies in the final synthesis corpus** (Corpus Freeze v1.2, 2026-07-22).
-- Full accounting: 336 included at screening = 93 synthesis + 243 pending (no usable full text); 157 extracted = 93 synthesis + 64 excluded. Every count reconciles exactly — see `corpus_freeze/CORPUS_FREEZE_v1.2.md` and `docs/prisma_flow.md`.
+- 13,854 records identified (OpenAlex + Crossref), 1,826 duplicates, 12,028 after deduplication, 400 shortlisted, 157 with full text assessed, 243 pending (no usable legal full text).
+- 97 excluded at full text (PA-002: 12, PA-004: 52, PA-006: 4, PA-007: 29), leaving **60 journal articles** in the synthesis corpus.
+- Identities: 400 = 157 + 243 and 157 = 60 + 97.
+- Earlier pipeline scripts, configs and logs mention the journal this work was first submitted to; they are kept unchanged as a record of the original process.
 
 ## Reproducing the pipeline
 
@@ -46,7 +49,7 @@ Screening, full-text eligibility assessment, evidence extraction, and quality ap
 
 ## Citation
 
-A formal citation (with DOI) will be added here once the manuscript is accepted and published. In the meantime, please cite this repository directly by URL and commit hash.
+See `CITATION.cff`. A Zenodo DOI for the archived release will be added here once deposited.
 
 ## Status
 

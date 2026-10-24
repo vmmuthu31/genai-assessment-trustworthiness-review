@@ -1,0 +1,15 @@
+{
+  "title": "Trustworthiness of generative AI for automated educational assessment: PRISMA 2020 systematic review, reproducibility package (Corpus Freeze v1.4)",
+  "upload_type": "dataset",
+  "description": "Protocol, pipeline, frozen evidence dataset (60 journal articles, Corpus Freeze v1.4, 2026-10-24), exclusion log, amendments PA-001 to PA-007 and manual quality-control audit for a PRISMA 2020 systematic review of the trustworthiness of generative AI for automated educational assessment. Code: MIT. Data and documentation: CC BY 4.0.",
+  "version": "1.4",
+  "publication_date": "2026-10-24",
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "creators": [
+    {"name": "Muthumari, Vairamuthu", "affiliation": "SRM Institute of Science and Technology, Chennai, India", "orcid": "0009-0009-7207-5742"},
+    {"name": "M. B., Sudhan", "affiliation": "SRM Institute of Science and Technology, Chennai, India"}
+  ],
+  "keywords": ["systematic review", "PRISMA 2020", "generative AI", "large language models", "automated educational assessment", "trustworthy AI"],
+  "related_identifiers": [{"identifier": "https://github.com/vmmuthu31/genai-assessment-trustworthiness-review", "relation": "isSupplementTo", "scheme": "url"}]
+}
